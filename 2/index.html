@@ -1,0 +1,1595 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🇧🇷 Brésil en Famille — 11 Jours d'Aventure</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Dancing+Script:wght@700&display=swap');
+
+        :root {
+            --green-dark: #006341;
+            --green-mid: #009c3b;
+            --green-light: #00c853;
+            --yellow: #ffdf00;
+            --yellow-light: #fff176;
+            --blue: #002776;
+            --blue-light: #1565c0;
+            --white: #ffffff;
+            --sand: #fdf6e3;
+            --sand-dark: #f5e6c8;
+            --orange: #ff6d00;
+            --red: #d32f2f;
+            --coral: #ff7043;
+            --teal: #00897b;
+            --purple: #7b1fa2;
+            --bg-gradient: linear-gradient(135deg, #e8f5e9 0%, #fffde7 50%, #e3f2fd 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-gradient);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #006341 0%, #009c3b 30%, #ffdf00 60%, #002776 100%);
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 2;
+            padding: 2rem;
+            animation: fadeInUp 1.2s ease-out;
+        }
+
+        .hero-flag {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            animation: bounce 2s infinite;
+        }
+
+        .hero h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 4.5rem;
+            color: var(--white);
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            margin-bottom: 0.5rem;
+        }
+
+        .hero h2 {
+            font-size: 1.5rem;
+            color: var(--yellow);
+            font-weight: 300;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+        }
+
+        .hero-badges {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .hero-badge {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 50px;
+            padding: 0.6rem 1.5rem;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 2rem;
+            animation: scrollBounce 2s infinite;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        /* STATS BAR */
+        .stats-bar {
+            background: var(--white);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 2rem 1rem;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .stat-item {
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--green-dark);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* SECTION CONTAINER */
+        .section {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--green-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-title .subtitle {
+            font-size: 1.1rem;
+            color: #888;
+            font-weight: 300;
+        }
+
+        /* MAP SECTION */
+        .map-section {
+            background: var(--white);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin: 2rem auto;
+            max-width: 1400px;
+        }
+
+        .map-header {
+            background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+            padding: 1.5rem 2rem;
+            color: white;
+        }
+
+        .map-header h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .map-header p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        #map {
+            height: 550px;
+            width: 100%;
+        }
+
+        .map-legend {
+            padding: 1rem 2rem;
+            background: #f8f9fa;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .legend-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        /* TIMELINE */
+        .timeline {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(to bottom, var(--green-mid), var(--yellow), var(--blue), var(--coral), var(--green-dark));
+            border-radius: 4px;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .timeline-item:nth-child(odd) {
+            flex-direction: row;
+        }
+
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .timeline-item .content {
+            width: 45%;
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .timeline-item .content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            z-index: 2;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border: 4px solid white;
+        }
+
+        .day-badge {
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.75rem;
+        }
+
+        .content h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.3rem;
+            color: #333;
+        }
+
+        .content .location {
+            font-size: 0.85rem;
+            color: #999;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .content .activities {
+            list-style: none;
+            padding: 0;
+        }
+
+        .content .activities li {
+            padding: 0.4rem 0;
+            padding-left: 1.8rem;
+            position: relative;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #555;
+        }
+
+        .content .activities li::before {
+            content: attr(data-icon);
+            position: absolute;
+            left: 0;
+            font-size: 1rem;
+        }
+
+        .food-tag {
+            display: inline-block;
+            background: #fff3e0;
+            color: var(--orange);
+            padding: 0.2rem 0.7rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin: 0.2rem;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+            border-left: 4px solid var(--green-mid);
+            border-radius: 0 8px 8px 0;
+            padding: 0.8rem 1rem;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+        }
+
+        /* CATEGORY CARDS */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 6px 25px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .category-card-header {
+            padding: 1.5rem;
+            color: white;
+            text-align: center;
+        }
+
+        .category-card-header .icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .category-card-header h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .category-card-body {
+            padding: 1.5rem;
+        }
+
+        .category-card-body ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .category-card-body li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .category-card-body li:last-child {
+            border-bottom: none;
+        }
+
+        /* GASTRONOMY TABLE */
+        .gastro-section {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        }
+
+        .gastro-header {
+            background: linear-gradient(135deg, var(--orange), var(--coral));
+            padding: 2rem;
+            color: white;
+            text-align: center;
+        }
+
+        .gastro-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 0;
+        }
+
+        .gastro-region {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #f0f0f0;
+            border-right: 1px solid #f0f0f0;
+        }
+
+        .gastro-region h4 {
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .dish-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        .dish-chip {
+            background: #fce4ec;
+            color: #c62828;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .dish-chip.star {
+            background: #fff8e1;
+            color: #e65100;
+            border: 1px solid #ffcc02;
+        }
+
+        /* BUDGET SECTION */
+        .budget-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        }
+
+        .budget-bars {
+            margin-top: 2rem;
+        }
+
+        .budget-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .budget-item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .budget-bar-bg {
+            height: 30px;
+            background: #f0f0f0;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .budget-bar-fill {
+            height: 100%;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 1rem;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 700;
+            transition: width 2s ease;
+        }
+
+        .budget-total {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+            border-radius: 16px;
+            color: white;
+        }
+
+        .budget-total .amount {
+            font-size: 2.5rem;
+            font-weight: 800;
+        }
+
+        /* FLIGHTS SECTION */
+        .flights-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+        }
+
+        .flight-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 6px 25px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            min-width: 320px;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .flight-icon {
+            font-size: 2.5rem;
+            color: var(--blue);
+        }
+
+        .flight-route {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--blue);
+        }
+
+        .flight-details {
+            font-size: 0.8rem;
+            color: #999;
+        }
+
+        .flight-day {
+            background: var(--blue);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        /* BABY TIPS */
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .tip-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+            border-top: 4px solid;
+            text-align: center;
+        }
+
+        .tip-card .tip-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .tip-card h4 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .tip-card p {
+            font-size: 0.85rem;
+            color: #777;
+            line-height: 1.6;
+        }
+
+        /* SUMMARY VISUAL STRIP */
+        .summary-strip {
+            display: flex;
+            overflow-x: auto;
+            gap: 0;
+            margin: 2rem 0;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+
+        .strip-item {
+            flex: 1;
+            min-width: 200px;
+            padding: 2rem 1.5rem;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+
+        .strip-item .strip-days {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+        }
+
+        .strip-item .strip-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .strip-item h4 {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .strip-item p {
+            font-size: 0.75rem;
+            opacity: 0.85;
+            margin-top: 0.3rem;
+        }
+
+        /* FOOTER */
+        footer {
+            background: linear-gradient(135deg, var(--green-dark), #004d2f);
+            color: white;
+            text-align: center;
+            padding: 3rem 2rem;
+            margin-top: 3rem;
+        }
+
+        footer h3 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        footer p {
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        /* ANIMATIONS */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes scrollBounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(10px); }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .hero h1 { font-size: 2.8rem; }
+            .hero h2 { font-size: 1rem; }
+
+            .timeline::before { left: 20px; }
+
+            .timeline-item,
+            .timeline-item:nth-child(even) {
+                flex-direction: column;
+                align-items: flex-start;
+                padding-left: 60px;
+            }
+
+            .timeline-item .content {
+                width: 100%;
+            }
+
+            .timeline-dot {
+                left: 20px;
+                transform: translateX(-50%);
+            }
+
+            .stat-item { min-width: 70px; }
+            .stat-number { font-size: 1.4rem; }
+
+            .strip-item { min-width: 150px; padding: 1.5rem 1rem; }
+        }
+
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 2rem; }
+            .section { padding: 2rem 1rem; }
+            .section-title h2 { font-size: 1.8rem; }
+            #map { height: 350px; }
+        }
+
+        /* Leaflet popup custom */
+        .custom-popup .leaflet-popup-content-wrapper {
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .popup-content {
+            text-align: center;
+            min-width: 180px;
+        }
+
+        .popup-content h4 {
+            margin: 0.3rem 0;
+            font-size: 1rem;
+            color: var(--green-dark);
+        }
+
+        .popup-content .popup-days {
+            font-size: 0.75rem;
+            color: #999;
+            font-weight: 600;
+        }
+
+        .popup-content .popup-desc {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.3rem;
+        }
+
+        .popup-content .popup-icon {
+            font-size: 2rem;
+        }
+
+        /* Route line animation */
+        .route-path {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: drawLine 3s ease forwards;
+        }
+
+        @keyframes drawLine {
+            to { stroke-dashoffset: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-flag">🇧🇷</div>
+            <h1>Brésil en Famille</h1>
+            <h2>11 jours d'aventure — Août 2026</h2>
+            <div class="hero-badges">
+                <span class="hero-badge">👨‍👩‍👧 2 adultes + bébé 1 an</span>
+                <span class="hero-badge">📍 4 régions</span>
+                <span class="hero-badge">✈️ 3 vols internes</span>
+                <span class="hero-badge">🚗 2 locations voiture</span>
+            </div>
+        </div>
+        <div class="scroll-indicator" onclick="document.getElementById('stats').scrollIntoView({behavior:'smooth'})">⌄</div>
+    </section>
+
+    <!-- STATS BAR -->
+    <div class="stats-bar" id="stats">
+        <div class="stat-item">
+            <div class="stat-number">11</div>
+            <div class="stat-label">Jours</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">4</div>
+            <div class="stat-label">Régions</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">3</div>
+            <div class="stat-label">Vols</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">20+</div>
+            <div class="stat-label">Plats locaux</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">50+</div>
+            <div class="stat-label">Espèces animales</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">∞</div>
+            <div class="stat-label">Souvenirs</div>
+        </div>
+    </div>
+
+    <!-- SUMMARY STRIP -->
+    <div class="section">
+        <div class="summary-strip">
+            <div class="strip-item" style="background: linear-gradient(135deg, #2e7d32, #43a047);">
+                <div class="strip-days">Jours 1–3</div>
+                <div class="strip-icon">⛰️</div>
+                <h4>Chapada Diamantina</h4>
+                <p>Grottes bleues & cascades</p>
+            </div>
+            <div class="strip-item" style="background: linear-gradient(135deg, #6a1b9a, #ab47bc);">
+                <div class="strip-days">Jours 4–5</div>
+                <div class="strip-icon">🎭</div>
+                <h4>Salvador</h4>
+                <p>Culture afro-brésilienne</p>
+            </div>
+            <div class="strip-item" style="background: linear-gradient(135deg, #00838f, #26c6da);">
+                <div class="strip-days">Jours 6–7</div>
+                <div class="strip-icon">🏖️</div>
+                <h4>Praia do Forte</h4>
+                <p>Plages & tortues</p>
+            </div>
+            <div class="strip-item" style="background: linear-gradient(135deg, #e65100, #ff9800);">
+                <div class="strip-days">Jours 8–10</div>
+                <div class="strip-icon">🐊</div>
+                <h4>Bonito & Pantanal</h4>
+                <p>Safari & rivières cristallines</p>
+            </div>
+            <div class="strip-item" style="background: linear-gradient(135deg, #1565c0, #42a5f5);">
+                <div class="strip-days">Jour 11</div>
+                <div class="strip-icon">✈️</div>
+                <h4>Retour</h4>
+                <p>Campo Grande → Rio</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAP -->
+    <div class="section">
+        <div class="map-section fade-in">
+            <div class="map-header">
+                <h3>🗺️ Carte Interactive de l'Itinéraire</h3>
+                <p>Cliquez sur les marqueurs pour découvrir chaque étape</p>
+            </div>
+            <div id="map"></div>
+            <div class="map-legend">
+                <strong>Légende :</strong>
+                <div class="legend-item"><div class="legend-dot" style="background:#2e7d32;"></div> Chapada Diamantina</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#6a1b9a;"></div> Salvador</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#00838f;"></div> Praia do Forte</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#e65100;"></div> Bonito & Pantanal</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#1565c0;"></div> Rio de Janeiro</div>
+                <div class="legend-item">✈️ Vols internes</div>
+                <div class="legend-item">🚗 Routes en voiture</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TIMELINE -->
+    <div class="section">
+        <div class="section-title">
+            <h2>📅 Programme Jour par Jour</h2>
+            <p class="subtitle">11 jours optimisés pour une aventure inoubliable en famille</p>
+        </div>
+
+        <div class="timeline">
+
+            <!-- JOUR 1 -->
+            <div class="timeline-item fade-in">
+                <div class="content">
+                    <span class="day-badge" style="background: linear-gradient(135deg, #2e7d32, #43a047);">Jour 1</span>
+                    <h3>Arrivée à Lençóis</h3>
+                    <div class="location">📍 Chapada Diamantina, Bahia</div>
+                    <ul class="activities">
+                        <li data-icon="✈️">Vol Rio → Salvador → Lençóis (Azul)</li>
+                        <li data-icon="🏨">Installation en pousada de charme</li>
+                        <li data-icon="🚶">Balade dans le centre colonial historique</li>
+                        <li data-icon="🎵">Musique forró live sur la place principale</li>
+                    </ul>
+                    <div style="margin-top: 0.8rem;">
+                        <span class="food-tag">🍖 Godó de banana</span>
+                        <span class="food-tag">🥩 Carne de sol</span>
+                        <span class="food-tag">🍹 Liqueur de umbu</span>
+                    </div>
+                </div>
+                <div class="timeline-dot" style="background: linear-gradient(135deg, #2e7d32, #43a047);">⛰️</div>
+            </div>
+
+            <!-- JOUR 2 -->
+            <div class="timeline-item fade-in">
+                <div class="content">
+                    <span class="day-badge" style="background: linear-gradient(135deg, #2e7d32, #43a047);">Jour 2</span>
+                    <h3>Grottes Enchantées</h3>
+                    <div class="location">📍 Chapada Diamantina</div>
+                    <ul class="activities">
+                        <li data-icon="💎">Gruta da Pratinha — rivière d'un bleu irréel</li>
+                        <li data-icon="🔵">Gruta Azul — spectacle de lumière bleue</li>
+                        <li data-icon="✨">Poço Encantado — faisceau bleu magique (optimal en août !)</li>
+                        <li data-icon="🏊">Baignade en eaux turquoise</li>
+                    </ul>
+                    <div class="highlight-box">
+                        ⭐ <strong>Moment fort</strong> : Le Poço Encantado en août offre un phénomène lumineux rare quand le soleil frappe l'eau à l'angle parfait.
+                    </div>
+                </div>
+                <div class="timeline-dot" style="background: linear-gradient(135deg, #2e7d32, #43a047);">💎</div>
+            </div>
+
+            <!-- JOUR 3 -->
+            <div class="timeline-item fade-in">
+                <div class="content">
+                    <span class="day-badge" style="background: linear-gradient(135deg, #2e7d32, #43a047);">Jour 3</span>
+                    <h3>Cascade de la Fumée</h3>
+                    <div class="location">📍 Chapada Diamantina → Salvador</div>
+                    <ul class="activities">
+                        <li data-icon="🌊">Cachoeira da Fumaça — 340m, 2ème plus haute du Brésil</li>
+                        <li data-icon="👶">Alternative : Ribeirão do Meio, piscine naturelle familiale</li>
+                        <li data-icon="🥩">Picanha na pedra (viande grillée sur pierre)</li>
+                        <li data-icon="✈️">Vol retour vers Salvador en fin de journée</li>
+                    </ul>
+                </div>
+                <div class="timeline-dot" style="background: linear-gradient(135deg, #2e7d32, #43a047);">🌊</div>
+            </div>
+
+            <!-- JOUR 4 -->
+            <div class="timeline-item fade-in">
+                <div class="content">
+                    <span class="day-badge" style="background: linear-gradient(135deg, #6a1b9a, #ab47bc);">Jour 4</span>
+                    <h3>Pelourinho & Culture Afro</h3>
+                    <div class="location">📍 Salvador de Bahia</div>
+                    <ul class="activities">
+                        <li data-icon="⛪">Igreja de São Francisco — « l'église d'or »</li>
+                        <li data-icon="🥘">Acarajé chez les baianas en costume traditionnel</li>
+                        <li data-icon="🏛️">Museu Afro-Brasileiro & Terreiro de Jesus</li>
+                        <li data-icon="🥋">Roda de capoeira en plein air</li>
+                        <li data-icon="🥁">Percussions Olodum (mardi soir au Pelourinho)</li>
+                    </ul>
+                    <div style="margin-top: 0.8rem;">
+                        <span class="food-tag">🧆 Acarajé</span>
+                        <span class="food-tag">🍲 Moqueca baiana</span>
+                        <span class="food-tag">🦐 Bobó de camarão</span>
+                    </div>
+                    <div class="highlight-box">
+                        🎭 <strong>Folklore</strong> : Salvador est LA capitale culturelle afro-brésilienne — chaque rue respire l'histoire et la musique.
+                    </div>
+                </div>
+                <div class="timeline-dot" style="background: linear-gradient(135deg, #6a1b9a, #ab47bc);">🎭</div>
+            </div>
+
+            <!-- JOUR 5 -->
+            <div class="timeline-item fade-in">
+                <div class="content">
+                    <span class="day-badge" style="background: linear-gradient(135deg, #6a1b9a, #ab47bc);">Jour 5</span>
+                    <h3>Candomblé, Marchés & Saveurs</h3>
+                    <div class="location">📍 Salvador de Bahia</div>
+                    <ul class="activities">
+                        <li data-icon="🛍️">Mercado Modelo — artisanat, épices, capoeira</li>
+                        <li data-icon="🛗">Elevador Lacerda — ascenseur Art Déco emblématique</li>
+                        <li data-icon="🕯️">Cérémonie de Candomblé (optionnel, si ouvert au public)</li>
+                        <li data-icon="🍽️">Buffet bahianais au SENAC — goûter à TOUT</li>
+                        <li data-icon="🌊">Quartier Rio Vermelho & temple de Iemanjá</li>
+                    </ul>
+                    <div style="margin-top: 0.8rem;">
+                        <span class="food-tag">🍛 Vatapá</span>
+                        <span class="food-tag">🍗 Xinxim de galinha</span>
+                        <span class="food-tag">🥥 Cocada</span>
+                        <span class="food-tag">🍮 Quindim</span>
+                    </div>
+                </div>
+                <div class="timeline-dot" style="background: linear-gradient(135deg, #6a1b9a, #ab47bc);">🕯️</div>
+            </div>
+
+            <!-- JOUR 6 -->
+            <div class="timeline-item fade-in">
+                <div class="content">
+                    <span class="day-badge" style="background: linear-gradient(135deg, #00838f, #26c6da);">Jour 6</span>
+                    <h3>Plages Paradisiaques & Tortues</h3>
+                    <div class="location">📍 Praia do Forte, Bahia</div>
+                    <ul class="activities">
+                        <li data-icon="🚗">Route côtière Salvador → Praia do Forte (1h15)</li>
+                        <li data-icon="🐢">Projeto TAMAR — centre de conservation des tortues marines</li>
+                        <li data-icon="🐋">Observation de baleines à bosse (saison : juil-oct !)</li>
+                        <li data-icon="🏖️">Piscines naturelles à marée basse — parfait pour bébé</li>
+                        <li data-icon="🦞">Dîner de lagosta grelhada pieds dans le sable</li>
+                    </ul>
+                    <div class="highlight-box">
+                        🐋 <strong>Faune</strong> : En août, les baleines à bosse sont de passage au large — excursions d'observation disponibles !
+                    </div>
+                </div>
+                <div class="timeline-dot" style="background: linear-gradient(135deg, #00838f, #26c6da);">🐢</div>
+            </div>
+
+            <!-- JOUR 7 -->
+            <div class="timeline-item fade-in">
+                <div class="content">
+                    <span class="day-badge" style="background: linear-gradient(135deg, #00838f, #26c6da);">Jour 7</span>
+                    <h3>Forêt Atlantique & Plage Secrète</h3>
+                    <div class="location">📍 Imbassaí & Reserva Sapiranga</div>
+                    <ul class="activities">
+                        <li data-icon="🐒">Reserva Sapiranga — singes capucins, toucans, perroquets</li>
+                        <li data-icon="🛶">Kayak sur la rivière Pojuca</li>
+                        <li data-icon="🏝️">Plage d'Imbassaí — rivière rencontre la mer, quasi déserte</li>
+                        <li data-icon="🐟">Moqueca de peixe dans un restaurant sur la plage</li>
+                        <li data-icon="✈️">Retour Salvador, vol vers Campo Grande le lendemain</li>
+                    </ul>
+                </div>
+                <div class="timeline-dot" style="background: linear-gradient(135deg, #00838f, #26c6da);">🐒</div>
+            </div>
+
+            <!-- JOUR 8 -->
+            <div class="timeline-item fade-in">
+                <div class="content">
+                    <span class="day-badge" style="background: linear-gradient(135deg, #e65100, #ff9800);">Jour 8</span>
+                    <h3>Rivières Cristallines</h3>
+                    <div class="location">📍 Bonito, Mato Grosso do Sul</div>
+                    <ul class="activities">
+                        <li data-icon="✈️">Vol Salvador → Campo Grande, route vers Bonito (3h)</li>
+                        <li data-icon="🤿">Rio Sucuri — flutuação (snorkeling en dérive), aquarium naturel</li>
+                        <li data-icon="🐟">Poissons multicolores dans une eau d'une transparence absolue</li>
+                        <li data-icon="👶">Un parent alterne pendant que l'autre reste avec bébé (hamacs !)</li>
+                    </ul>
+                    <div style="margin-top: 0.8rem;">
+                        <span class="food-tag">🐟 Pintado grelhado</span>
+                        <span class="food-tag">🍚 Arroz carreteiro</span>
+                        <span class="food-tag">🌽 Sopa paraguaia</span>
+                        <span class="food-tag">🧉 Tereré</span>
+                    </div>
+                </div>
+                <div class="timeline-dot" style="background: linear-gradient(135deg, #e65100, #ff9800);">🤿</div>
+            </div>
+
+            <!-- JOUR 9 -->
+            <div class="timeline-item fade-in">
+                <div class="content">
+                    <span class="day-badge" style="background: linear-gradient(135deg, #e65100, #ff9800);">Jour 9</span>
+                    <h3>Grotte du Lac Bleu & Aras en Vol</h3>
+                    <div class="location">📍 Bonito</div>
+                    <ul class="activities">
+                        <li data-icon="🔵">Gruta do Lago Azul — lac souterrain bleu surnaturel</li>
+                        <li data-icon="🦜">Buraco das Araras — gouffre géant, dizaines d'aras en vol libre</li>
+                        <li data-icon="🐟">Balneário Municipal — barboter avec bébé parmi les poissons</li>
+                        <li data-icon="🚗">Route vers Miranda / Estância pour nuit en fazenda Pantanal</li>
+                    </ul>
+                    <div class="highlight-box">
+                        🦜 <strong>Spectacle unique</strong> : Les aras rouges et bleus qui tournoient dans le gouffre du Buraco das Araras — moment magique garanti.
+                    </div>
+                </div>
+                <div class="timeline-dot" style="background: linear-gradient(135deg, #e65100, #ff9800);">🦜</div>
+            </div>
+
+            <!-- JOUR 10 -->
+            <div class="timeline-item fade-in">
+                <div class="content">
+                    <span class="day-badge" style="background: linear-gradient(135deg, #e65100, #ff9800);">Jour 10</span>
+                    <h3>Safari au Pantanal</h3>
+                    <div class="location">📍 Pantanal Sud, Miranda</div>
+                    <ul class="activities">
+                        <li data-icon="🐊">Safari photo — caïmans, capybaras, loutres géantes</li>
+                        <li data-icon="🦅">Oiseaux : jabiru, toucans, hérons, martins-pêcheurs</li>
+                        <li data-icon="🐴">Balade à cheval dans la plaine</li>
+                        <li data-icon="🌅">Coucher de soleil sur le Pantanal — moment magique</li>
+                        <li data-icon="🔦">Safari nocturne : caïmans, chouettes, tapirs</li>
+                    </ul>
+                    <div style="margin-top: 0.8rem;">
+                        <span class="food-tag">🥩 Churrasco pantaneiro</span>
+                        <span class="food-tag">🍖 Farofa</span>
+                        <span class="food-tag">🍠 Mandioca frita</span>
+                    </div>
+                    <div class="highlight-box">
+                        🐊 <strong>Meilleure période</strong> : En août (saison sèche), les animaux se concentrent autour des points d'eau — densité d'observation maximale !
+                    </div>
+                </div>
+                <div class="timeline-dot" style="background: linear-gradient(135deg, #e65100, #ff9800);">🐊</div>
+            </div>
+
+            <!-- JOUR 11 -->
+            <div class="timeline-item fade-in">
+                <div class="content">
+                    <span class="day-badge" style="background: linear-gradient(135deg, #1565c0, #42a5f5);">Jour 11</span>
+                    <h3>Retour — Saudade</h3>
+                    <div class="location">📍 Campo Grande → Rio de Janeiro</div>
+                    <ul class="activities">
+                        <li data-icon="🌅">Derniers instants au Pantanal</li>
+                        <li data-icon="🚗">Route vers Campo Grande</li>
+                        <li data-icon="🛍️">Mercado Municipal — tereré, chipa, artisanat Terena</li>
+                        <li data-icon="✈️">Vol Campo Grande → Rio (≈ 2h)</li>
+                        <li data-icon="💚">Des souvenirs plein la tête et le cœur</li>
+                    </ul>
+                </div>
+                <div class="timeline-dot" style="background: linear-gradient(135deg, #1565c0, #42a5f5);">✈️</div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- CATEGORY HIGHLIGHTS -->
+    <div class="section">
+        <div class="section-title">
+            <h2>🎯 Les Temps Forts par Thème</h2>
+            <p class="subtitle">Chaque envie cochée, chaque rêve réalisé</p>
+        </div>
+        <div class="category-grid">
+
+            <div class="category-card fade-in">
+                <div class="category-card-header" style="background: linear-gradient(135deg, #2e7d32, #66bb6a);">
+                    <div class="icon">🐾</div>
+                    <h4>Faune Sauvage</h4>
+                </div>
+                <div class="category-card-body">
+                    <ul>
+                        <li>🐊 Caïmans par dizaines (Pantanal)</li>
+                        <li>🦜 Aras rouges & bleus en vol libre (Bonito)</li>
+                        <li>🐢 Tortues marines (Praia do Forte)</li>
+                        <li>🐋 Baleines à bosse (Litoral Norte)</li>
+                        <li>🐒 Singes capucins (Reserva Sapiranga)</li>
+                        <li>🦦 Loutres géantes (Pantanal)</li>
+                        <li>🦅 Jabiru, toucans, hérons (Pantanal)</li>
+                        <li>🐟 Poissons multicolores (Rio Sucuri)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="category-card fade-in">
+                <div class="category-card-header" style="background: linear-gradient(135deg, #00838f, #4dd0e1);">
+                    <div class="icon">🏖️</div>
+                    <h4>Plages Paradisiaques</h4>
+                </div>
+                <div class="category-card-body">
+                    <ul>
+                        <li>🐚 Piscines naturelles de Praia do Forte</li>
+                        <li>🏝️ Plage d'Imbassaí — rivière + mer</li>
+                        <li>💎 Eaux turquoise de la Gruta da Pratinha</li>
+                        <li>🏊 Balneário Municipal de Bonito</li>
+                        <li>🌴 Cocotiers & sable blanc du Litoral Norte</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="category-card fade-in">
+                <div class="category-card-header" style="background: linear-gradient(135deg, #bf360c, #ff7043);">
+                    <div class="icon">⛰️</div>
+                    <h4>Paysages Hors du Commun</h4>
+                </div>
+                <div class="category-card-body">
+                    <ul>
+                        <li>✨ Poço Encantado — rayon bleu magique</li>
+                        <li>🔵 Gruta do Lago Azul — lac souterrain</li>
+                        <li>💎 Gruta Azul — lumière surnaturelle</li>
+                        <li>🌊 Cachoeira da Fumaça — 340m de chute</li>
+                        <li>🕳️ Buraco das Araras — gouffre géant</li>
+                        <li>🌅 Coucher de soleil sur le Pantanal</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="category-card fade-in">
+                <div class="category-card-header" style="background: linear-gradient(135deg, #6a1b9a, #ce93d8);">
+                    <div class="icon">🎭</div>
+                    <h4>Folklore & Culture</h4>
+                </div>
+                <div class="category-card-body">
+                    <ul>
+                        <li>🥋 Capoeira au Pelourinho</li>
+                        <li>🥁 Percussions Olodum</li>
+                        <li>🕯️ Candomblé — religion syncrétique</li>
+                        <li>👘 Baianas en costume traditionnel</li>
+                        <li>🎵 Forró live à Lençóis</li>
+                        <li>🤠 Culture pantaneira & vaqueiros</li>
+                        <li>🏘️ Villages coloniaux historiques</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- GASTRONOMY -->
+    <div class="section">
+        <div class="gastro-section fade-in">
+            <div class="gastro-header">
+                <h2 style="font-size:2rem;">🍽️ Carte Gastronomique</h2>
+                <p style="opacity:0.85;">Les saveurs du Brésil, région par région</p>
+            </div>
+            <div class="gastro-grid">
+                <div class="gastro-region">
+                    <h4>⛰️ Chapada Diamantina</h4>
+                    <div class="dish-list">
+                        <span class="dish-chip star">Godó de banana</span>
+                        <span class="dish-chip">Carne de sol</span>
+                        <span class="dish-chip">Picanha na pedra</span>
+                        <span class="dish-chip">Liqueur de umbu</span>
+                        <span class="dish-chip">Jus de mangaba</span>
+                    </div>
+                </div>
+                <div class="gastro-region">
+                    <h4>🎭 Salvador de Bahia</h4>
+                    <div class="dish-list">
+                        <span class="dish-chip star">Acarajé</span>
+                        <span class="dish-chip star">Moqueca baiana</span>
+                        <span class="dish-chip">Bobó de camarão</span>
+                        <span class="dish-chip">Vatapá</span>
+                        <span class="dish-chip">Caruru</span>
+                        <span class="dish-chip">Xinxim de galinha</span>
+                        <span class="dish-chip">Abará</span>
+                        <span class="dish-chip">Cocada</span>
+                        <span class="dish-chip">Quindim</span>
+                    </div>
+                </div>
+                <div class="gastro-region">
+                    <h4>🏖️ Praia do Forte</h4>
+                    <div class="dish-list">
+                        <span class="dish-chip star">Lagosta grelhada</span>
+                        <span class="dish-chip">Peixe na folha de bananeira</span>
+                        <span class="dish-chip">Moqueca de peixe</span>
+                        <span class="dish-chip">Tapioca</span>
+                        <span class="dish-chip">Caldeirada de frutos do mar</span>
+                    </div>
+                </div>
+                <div class="gastro-region">
+                    <h4>🐊 Bonito & Pantanal</h4>
+                    <div class="dish-list">
+                        <span class="dish-chip star">Pintado grelhado</span>
+                        <span class="dish-chip star">Pacu assado na brasa</span>
+                        <span class="dish-chip">Arroz carreteiro</span>
+                        <span class="dish-chip">Sopa paraguaia</span>
+                        <span class="dish-chip">Chipa</span>
+                        <span class="dish-chip">Churrasco pantaneiro</span>
+                        <span class="dish-chip">Farofa</span>
+                        <span class="dish-chip">Tereré</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FLIGHTS -->
+    <div class="section">
+        <div class="section-title">
+            <h2>✈️ Vols Internes</h2>
+            <p class="subtitle">3 vols pour couvrir 4 régions en 11 jours</p>
+        </div>
+        <div class="flights-container">
+            <div class="flight-card fade-in">
+                <div class="flight-icon">✈️</div>
+                <div>
+                    <div class="flight-route">Rio GIG → Salvador SSA</div>
+                    <div class="flight-details">≈ 2h — LATAM, Gol, Azul</div>
+                    <div class="flight-details">+ correspondance vers Lençóis (1h, Azul)</div>
+                </div>
+                <span class="flight-day">J1</span>
+            </div>
+            <div class="flight-card fade-in">
+                <div class="flight-icon">✈️</div>
+                <div>
+                    <div class="flight-route">Salvador SSA → Campo Grande CGR</div>
+                    <div class="flight-details">≈ 2h30 — Gol, LATAM</div>
+                </div>
+                <span class="flight-day">J8</span>
+            </div>
+            <div class="flight-card fade-in">
+                <div class="flight-icon">✈️</div>
+                <div>
+                    <div class="flight-route">Campo Grande CGR → Rio GIG</div>
+                    <div class="flight-details">≈ 2h — LATAM, Gol, Azul</div>
+                </div>
+                <span class="flight-day">J11</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- BUDGET -->
+    <div class="section">
+        <div class="budget-section fade-in">
+            <div class="section-title" style="margin-bottom: 1rem;">
+                <h2>💰 Budget Estimatif</h2>
+                <p class="subtitle">Pour 2 adultes + 1 bébé, hors vols internationaux</p>
+            </div>
+            <div class="budget-bars">
+                <div class="budget-item">
+                    <div class="budget-item-header">
+                        <span>✈️ Vols internes (3 trajets)</span>
+                        <span><strong>1 200 — 1 800 €</strong></span>
+                    </div>
+                    <div class="budget-bar-bg">
+                        <div class="budget-bar-fill" style="width: 85%; background: linear-gradient(90deg, #1565c0, #42a5f5);">34%</div>
+                    </div>
+                </div>
+                <div class="budget-item">
+                    <div class="budget-item-header">
+                        <span>🏨 Hébergement (pousadas)</span>
+                        <span><strong>800 — 1 400 €</strong></span>
+                    </div>
+                    <div class="budget-bar-bg">
+                        <div class="budget-bar-fill" style="width: 65%; background: linear-gradient(90deg, #6a1b9a, #ce93d8);">26%</div>
+                    </div>
+                </div>
+                <div class="budget-item">
+                    <div class="budget-item-header">
+                        <span>🚗 Locations voiture</span>
+                        <span><strong>400 — 600 €</strong></span>
+                    </div>
+                    <div class="budget-bar-bg">
+                        <div class="budget-bar-fill" style="width: 35%; background: linear-gradient(90deg, #e65100, #ff9800);">12%</div>
+                    </div>
+                </div>
+                <div class="budget-item">
+                    <div class="budget-item-header">
+                        <span>🎟️ Excursions & activités</span>
+                        <span><strong>400 — 700 €</strong></span>
+                    </div>
+                    <div class="budget-bar-bg">
+                        <div class="budget-bar-fill" style="width: 40%; background: linear-gradient(90deg, #2e7d32, #66bb6a);">13%</div>
+                    </div>
+                </div>
+                <div class="budget-item">
+                    <div class="budget-item-header">
+                        <span>🍽️ Repas & boissons</span>
+                        <span><strong>500 — 800 €</strong></span>
+                    </div>
+                    <div class="budget-bar-bg">
+                        <div class="budget-bar-fill" style="width: 42%; background: linear-gradient(90deg, #c62828, #ef5350);">15%</div>
+                    </div>
+                </div>
+            </div>
+            <div class="budget-total">
+                <div style="font-size: 0.8rem; opacity: 0.8; text-transform: uppercase; letter-spacing: 2px;">Budget total estimé</div>
+                <div class="amount">3 300 — 5 300 €</div>
+                <div style="font-size: 0.85rem; opacity: 0.7; margin-top: 0.5rem;">Hors vols internationaux</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BABY TIPS -->
+    <div class="section">
+        <div class="section-title">
+            <h2>👶 Conseils Bébé</h2>
+            <p class="subtitle">Voyager avec un tout-petit au Brésil, en toute sérénité</p>
+        </div>
+        <div class="tips-grid">
+            <div class="tip-card fade-in" style="border-top-color: #2e7d32;">
+                <div class="tip-icon">🎒</div>
+                <h4>Porte-bébé dorsal</h4>
+                <p>Indispensable pour les randos (Chapada, Pantanal). Modèle ergonomique recommandé.</p>
+            </div>
+            <div class="tip-card fade-in" style="border-top-color: #1565c0;">
+                <div class="tip-icon">🧴</div>
+                <h4>Protection solaire</h4>
+                <p>SPF 50+ bébé, chapeau, vêtements anti-UV. Le soleil brésilien est intense !</p>
+            </div>
+            <div class="tip-card fade-in" style="border-top-color: #e65100;">
+                <div class="tip-icon">🦟</div>
+                <h4>Anti-moustiques</h4>
+                <p>Répulsif adapté bébé + moustiquaire de lit, surtout au Pantanal et en Chapada.</p>
+            </div>
+            <div class="tip-card fade-in" style="border-top-color: #c62828;">
+                <div class="tip-icon">🍌</div>
+                <h4>Alimentation</h4>
+                <p>Fruits tropicaux frais partout : mangue, papaye, banane — parfaits pour bébé !</p>
+            </div>
+            <div class="tip-card fade-in" style="border-top-color: #6a1b9a;">
+                <div class="tip-icon">😴</div>
+                <h4>Rythme adapté</h4>
+                <p>Programme pensé avec des demi-journées tranquilles pour les siestes et le repos.</p>
+            </div>
+            <div class="tip-card fade-in" style="border-top-color: #00838f;">
+                <div class="tip-icon">🚗</div>
+                <h4>Siège auto</h4>
+                <p>Apportez le vôtre ou confirmez la disponibilité avec le loueur à l'avance.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <h3>Boa Viagem ! 🌴</h3>
+        <p>Un voyage de 11 jours à travers le meilleur du Brésil — faune, plages, culture et saveurs.</p>
+        <p style="margin-top:1rem; font-size: 0.75rem; opacity:0.5;">Itinéraire préparé pour Août 2026 • Famille 2 adultes + bébé 1 an</p>
+    </footer>
+
+    <!-- LEAFLET JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Initialize map
+        const map = L.map('map', {
+            scrollWheelZoom: false
+        }).setView([-14.5, -45.0], 5);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 18
+        }).addTo(map);
+
+        // Custom icon factory
+        function createIcon(emoji, color) {
+            return L.divIcon({
+                html: `<div style="
+                    background: ${color};
+                    width: 42px;
+                    height: 42px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 20px;
+                    border: 3px solid white;
+                    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+                ">${emoji}</div>`,
+                className: '',
+                iconSize: [42, 42],
+                iconAnchor: [21, 21],
+                popupAnchor: [0, -25]
+            });
+        }
+
+        // Locations
+        const locations = [
+            {
+                name: "Rio de Janeiro",
+                coords: [-22.9068, -43.1729],
+                emoji: "✈️",
+                color: "#1565c0",
+                days: "Arrivée & Départ",
+                desc: "Point de départ et retour",
+                details: "Vol d'arrivée international<br>Vol de retour Jour 11"
+            },
+            {
+                name: "Lençóis — Chapada Diamantina",
+                coords: [-12.5628, -41.3872],
+                emoji: "⛰️",
+                color: "#2e7d32",
+                days: "Jours 1–3",
+                desc: "Grottes bleues, cascades, village colonial",
+                details: "Poço Encantado • Gruta da Pratinha<br>Gruta Azul • Cachoeira da Fumaça<br>Forró live • Godó de banana"
+            },
+            {
+                name: "Salvador de Bahia",
+                coords: [-12.9714, -38.5124],
+                emoji: "🎭",
+                color: "#6a1b9a",
+                days: "Jours 4–5",
+                desc: "Culture afro-brésilienne, folklore, gastronomie",
+                details: "Pelourinho • Capoeira • Olodum<br>Candomblé • Mercado Modelo<br>Acarajé • Moqueca baiana"
+            },
+            {
+                name: "Praia do Forte",
+                coords: [-12.5747, -38.0019],
+                emoji: "🐢",
+                color: "#00838f",
+                days: "Jours 6–7",
+                desc: "Plages paradisiaques, tortues, baleines",
+                details: "Projeto TAMAR • Baleines à bosse<br>Piscines naturelles • Imbassaí<br>Reserva Sapiranga • Lagosta grelhada"
+            },
+            {
+                name: "Bonito",
+                coords: [-21.1261, -56.4836],
+                emoji: "🤿",
+                color: "#e65100",
+                days: "Jours 8–9",
+                desc: "Rivières cristallines, grottes, aras",
+                details: "Rio Sucuri — flutuação<br>Gruta do Lago Azul<br>Buraco das Araras • Pintado grelhado"
+            },
+            {
+                name: "Pantanal — Miranda",
+                coords: [-20.2404, -56.3781],
+                emoji: "🐊",
+                color: "#bf360c",
+                days: "Jour 10",
+                desc: "Safari brésilien, faune exceptionnelle",
+                details: "Safari photo 4x4 & bateau<br>Caïmans • Capybaras • Loutres<br>Balade à cheval • Safari nocturne"
+            },
+            {
+                name: "Campo Grande",
+                coords: [-20.4697, -54.6201],
+                emoji: "🛫",
+                color: "#455a64",
+                days: "Jour 11",
+                desc: "Transit retour vers Rio",
+                details: "Mercado Municipal<br>Vol Campo Grande → Rio GIG"
+            }
+        ];
+
+        // Add markers
+        locations.forEach(loc => {
+            const marker = L.marker(loc.coords, {
+                icon: createIcon(loc.emoji, loc.color)
+            }).addTo(map);
+
+            marker.bindPopup(`
+                <div class="popup-content">
+                    <div class="popup-icon">${loc.emoji}</div>
+                    <h4>${loc.name}</h4>
+                    <div class="popup-days">${loc.days}</div>
+                    <div class="popup-desc">${loc.desc}</div>
+                    <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #eee;">
+                    <div style="font-size: 0.75rem; color: #888; text-align: left;">${loc.details}</div>
+                </div>
+            `, { className: 'custom-popup', maxWidth: 250 });
+        });
+
+        // Flight routes (dashed blue lines)
+        const flightRoutes = [
+            { from: [-22.9068, -43.1729], to: [-12.9714, -38.5124], label: "Vol J1" },  // Rio → Salvador
+            { from: [-12.9714, -38.5124], to: [-12.5628, -41.3872], label: "Vol J1" },  // Salvador → Lençóis
+            { from: [-12.5628, -41.3872], to: [-12.9714, -38.5124], label: "Vol J3" },  // Lençóis → Salvador
+            { from: [-12.9714, -38.5124], to: [-20.4697, -54.6201], label: "Vol J8" },  // Salvador → CGR
+            { from: [-20.4697, -54.6201], to: [-22.9068, -43.1729], label: "Vol J11" }  // CGR → Rio
+        ];
+
+        flightRoutes.forEach(route => {
+            L.polyline([route.from, route.to], {
+                color: '#1565c0',
+                weight: 2.5,
+                dashArray: '8, 8',
+                opacity: 0.7
+            }).addTo(map).bindTooltip(route.label, {
+                permanent: false,
+                direction: 'center',
+                className: 'flight-tooltip'
+            });
+        });
+
+        // Drive routes (solid orange lines)
+        const driveRoutes = [
+            { from: [-12.9714, -38.5124], to: [-12.5747, -38.0019], label: "🚗 1h15" },  // Salvador → Praia do Forte
+            { from: [-12.5747, -38.0019], to: [-12.9714, -38.5124], label: "🚗 retour" },  // Praia → Salvador
+            { from: [-20.4697, -54.6201], to: [-21.1261, -56.4836], label: "🚗 3h" },     // CGR → Bonito
+            { from: [-21.1261, -56.4836], to: [-20.2404, -56.3781], label: "🚗 2h" },     // Bonito → Miranda
+            { from: [-20.2404, -56.3781], to: [-20.4697, -54.6201], label: "🚗 3-4h" }    // Miranda → CGR
+        ];
+
+        driveRoutes.forEach(route => {
+            L.polyline([route.from, route.to], {
+                color: '#e65100',
+                weight: 3,
+                opacity: 0.6
+            }).addTo(map).bindTooltip(route.label, {
+                permanent: false,
+                direction: 'center'
+            });
+        });
+
+        // Fit bounds to show all markers
+        const allCoords = locations.map(l => l.coords);
+        map.fitBounds(allCoords, { padding: [50, 50] });
+
+        // SCROLL ANIMATIONS
+        const fadeEls = document.querySelectorAll('.fade-in');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        fadeEls.forEach(el => observer.observe(el));
+    </script>
+
+</body>
+</html>
