@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bahia en Famille : Itinéraire 11 Jours</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+theme: {
+extend: {
+fontFamily: {
+sans: ['Poppins', 'sans-serif'],
+},
+colors: {
+'bahia-red': '#FF6B6B',
+'bahia-teal': '#4ECDC4',
+'bahia-yellow': '#FFE66D',
+'bahia-dark': '#292F36',
+'bahia-light': '#F7FFF7',
+}
+}
+}
+}
+</script>
+<style>
+body {
+background-color: #F7FFF7;
+color: #292F36;
+}
+.chart-container {
+position: relative;
+width: 100%;
+max-width: 600px;
+margin-left: auto;
+margin-right: auto;
+height: 300px; /* Mobile base /
+max-height: 400px;
+}
+@media (min-width: 768px) {
+.chart-container {
+height: 350px; / Tablet/Desktop */
+}
+}
+.card-shadow {
+box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+.timeline-line {
+position: absolute;
+left: 50%;
+top: 0;
+bottom: 0;
+width: 4px;
+background-color: #E5E7EB;
+transform: translateX(-50%);
+z-index: 0;
+}
+@media (max-width: 768px) {
+.timeline-line {
+left: 20px;
+}
+}
+</style>
+</head>
+<body class="antialiased">
+
+<!-- Header / Hero Section -->
+<header class="bg-bahia-dark text-white py-12 px-4 md:px-8 shadow-lg">
+    <div class="max-w-6xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-6 md:mb-0 text-center md:text-left">
+                <h1 class="text-4xl md:text-5xl font-bold mb-2 text-bahia-yellow">Bahia <span class="text-bahia-teal">Authentique</span></h1>
+                <p class="text-xl md:text-2xl font-light">Aventure Familiale & Bébé Voyageur</p>
+                <div class="mt-4 flex flex-wrap justify-center md:justify-start gap-3">
+                    <span class="bg-bahia-red px-3 py-1 rounded-full text-sm font-semibold">Août (Hiver Tropical)</span>
+                    <span class="bg-bahia-teal px-3 py-1 rounded-full text-sm font-semibold text-bahia-dark">11 Jours</span>
+                    <span class="bg-bahia-yellow px-3 py-1 rounded-full text-sm font-semibold text-bahia-dark">Baleines & Canyons</span>
+                </div>
+            </div>
+            <div class="text-6xl animate-pulse">
+                🌴🇧🇷🐢
+            </div>
+        </div>
+        <div class="mt-8 bg-white/10 rounded-lg p-6 backdrop-blur-sm">
+            <p class="italic text-center md:text-left text-gray-200">
+                "Un itinéraire conçu pour maximiser la découverte (faune, paysages, culture) tout en respectant le rythme d'un bébé de 1 an. Focus sur l'État de Bahia pour éviter les vols multiples."
+            </p>
+        </div>
+    </div>
+</header>
+
+<!-- Navigation (Simple Sticky) -->
+<nav class="sticky top-0 bg-white shadow-md z-50 overflow-x-auto whitespace-nowrap py-3 px-4">
+    <div class="max-w-6xl mx-auto flex space-x-6 text-sm md:text-base font-semibold text-bahia-dark">
+        <a href="#overview" class="hover:text-bahia-red transition-colors">Vue d'Ensemble</a>
+        <a href="#itinerary" class="hover:text-bahia-red transition-colors">Itinéraire Jour par Jour</a>
+        <a href="#stats" class="hover:text-bahia-red transition-colors">Rythme & Budget</a>
+        <a href="#gastronomy" class="hover:text-bahia-red transition-colors">Saveurs</a>
+        <a href="#tips" class="hover:text-bahia-red transition-colors">Infos Bébé</a>
+    </div>
+</nav>
+
+<main class="max-w-6xl mx-auto px-4 py-8 space-y-16">
+
+    <!-- SECTION 1: OVERVIEW & TRIP DNA -->
+    <section id="overview">
+        <div class="mb-6">
+            <h2 class="text-3xl font-bold text-bahia-dark border-l-4 border-bahia-teal pl-4">L'ADN du Voyage</h2>
+            <p class="mt-2 text-gray-600">
+                Voici comment ce voyage s'équilibre entre vos envies d'aventure et les besoins de confort pour la famille. Nous avons privilégié Bahia pour sa richesse culturelle et naturelle concentrée.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <!-- KPI Cards -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-white p-6 rounded-xl card-shadow text-center border-t-4 border-bahia-red">
+                    <div class="text-4xl font-bold text-bahia-dark">26°C</div>
+                    <div class="text-sm text-gray-500 uppercase tracking-wide">Temp. Moyenne</div>
+                </div>
+                <div class="bg-white p-6 rounded-xl card-shadow text-center border-t-4 border-bahia-teal">
+                    <div class="text-4xl font-bold text-bahia-dark">3</div>
+                    <div class="text-sm text-gray-500 uppercase tracking-wide">Lieux Principaux</div>
+                </div>
+                <div class="bg-white p-6 rounded-xl card-shadow text-center border-t-4 border-bahia-yellow">
+                    <div class="text-4xl font-bold text-bahia-dark">100%</div>
+                    <div class="text-sm text-gray-500 uppercase tracking-wide">Sans Paludisme</div>
+                </div>
+                <div class="bg-white p-6 rounded-xl card-shadow text-center border-t-4 border-bahia-dark">
+                    <div class="text-4xl font-bold text-bahia-dark">🐋</div>
+                    <div class="text-sm text-gray-500 uppercase tracking-wide">Saison Baleines</div>
+                </div>
+            </div>
+
+            <!-- Radar Chart -->
+            <div class="bg-white p-4 rounded-xl card-shadow">
+                <h3 class="text-center font-bold text-gray-700 mb-2">Profil de l'Expérience</h3>
+                <div class="chart-container">
+                    <canvas id="tripDnaChart"></canvas>
+                </div>
+                <p class="text-xs text-center text-gray-400 mt-2">Un équilibre optimisé pour la découverte active avec bébé.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: ITINERARY TIMELINE -->
+    <section id="itinerary">
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-bahia-dark border-l-4 border-bahia-red pl-4">Votre Aventure : 11 Jours</h2>
+            <p class="mt-2 text-gray-600">
+                Un parcours triangulaire optimisé : Salvador (Culture) ➔ Chapada Diamantina (Nature/Trek) ➔ Praia do Forte (Plage/Faune).
+            </p>
+        </div>
+
+        <div class="relative">
+            <div class="timeline-line hidden md:block"></div>
+
+            <div class="space-y-8" id="timeline-container">
+                <!-- Days will be injected here by JS for easier management, but structured in HTML logic -->
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: LOGISTICS & STATS -->
+    <section id="stats" class="bg-white p-8 rounded-2xl card-shadow">
+        <div class="mb-6">
+            <h2 class="text-3xl font-bold text-bahia-dark border-l-4 border-bahia-yellow pl-4">Rythme & Logistique</h2>
+            <p class="mt-2 text-gray-600">
+                Comprendre l'intensité physique du voyage et la répartition estimée du budget pour 2 adultes et 1 bébé.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <!-- Bar Chart: Intensity -->
+            <div>
+                <h3 class="text-lg font-bold text-center mb-4 text-bahia-teal">Niveau d'Activité Physique</h3>
+                <div class="chart-container">
+                    <canvas id="activityChart"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4 text-center">
+                    <span class="inline-block w-3 h-3 bg-bahia-red rounded-full mr-1"></span> Journées intenses (Déplacements/Rando)
+                    <span class="inline-block w-3 h-3 bg-bahia-teal rounded-full mr-1 ml-2"></span> Journées cool (Plage/Ville)
+                </p>
+            </div>
+
+            <!-- Doughnut Chart: Budget -->
+            <div>
+                <h3 class="text-lg font-bold text-center mb-4 text-bahia-yellow text-shadow-sm" style="text-shadow: 1px 1px 0 #ddd;">Estimation Budget</h3>
+                <div class="chart-container">
+                    <canvas id="budgetChart"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4 text-center">Estimation hors vols internationaux. Basé sur un standing "Confort/Charme".</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: GASTRONOMY -->
+    <section id="gastronomy">
+        <div class="mb-6">
+            <h2 class="text-3xl font-bold text-bahia-dark border-l-4 border-bahia-teal pl-4">Palette de Saveurs</h2>
+            <p class="mt-2 text-gray-600">
+                La cuisine de Bahia est unique au Brésil, héritage direct de l'Afrique. À ne pas manquer !
+            </p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-white p-4 rounded-lg card-shadow text-center hover:bg-bahia-light transition cursor-pointer group">
+                <div class="text-5xl mb-2 group-hover:scale-110 transition-transform">🥘</div>
+                <h4 class="font-bold text-bahia-dark">Moqueca</h4>
+                <p class="text-xs text-gray-500">Ragoût de poisson, lait de coco, huile de palme (Dendê).</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg card-shadow text-center hover:bg-bahia-light transition cursor-pointer group">
+                <div class="text-5xl mb-2 group-hover:scale-110 transition-transform">🧆</div>
+                <h4 class="font-bold text-bahia-dark">Acarajé</h4>
+                <p class="text-xs text-gray-500">Beignet de haricot frit farci aux crevettes (Attention : Piment !).</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg card-shadow text-center hover:bg-bahia-light transition cursor-pointer group">
+                <div class="text-5xl mb-2 group-hover:scale-110 transition-transform">🥞</div>
+                <h4 class="font-bold text-bahia-dark">Tapioca</h4>
+                <p class="text-xs text-gray-500">Crêpe de manioc sans gluten, sucrée ou salée.</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg card-shadow text-center hover:bg-bahia-light transition cursor-pointer group">
+                <div class="text-5xl mb-2 group-hover:scale-110 transition-transform">🍹</div>
+                <h4 class="font-bold text-bahia-dark">Caïpirinha</h4>
+                <p class="text-xs text-gray-500">Cachaça & Citron vert (Pour les parents !).</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: BABY TIPS -->
+    <section id="tips" class="bg-bahia-teal/10 p-8 rounded-2xl border-2 border-bahia-teal/20">
+        <div class="flex flex-col md:flex-row gap-8">
+            <div class="md:w-1/3">
+                <h2 class="text-3xl font-bold text-bahia-dark mb-4">Kit de Survie <br><span class="text-bahia-red">Spécial Bébé</span></h2>
+                <div class="text-9xl text-center md:text-left">👶🎒</div>
+            </div>
+            <div class="md:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="bg-white p-4 rounded-lg shadow-sm flex items-start">
+                    <span class="text-2xl mr-3">🦟</span>
+                    <div>
+                        <h4 class="font-bold">Anti-Moustique</h4>
+                        <p class="text-sm text-gray-600">Indispensable. Prenez une marque "Zone Tropiques" adaptée aux nourrissons.</p>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm flex items-start">
+                    <span class="text-2xl mr-3">🚰</span>
+                    <div>
+                        <h4 class="font-bold">Eau & Hygiène</h4>
+                        <p class="text-sm text-gray-600">Ne jamais boire l'eau du robinet. Prévoyez de l'eau minérale même pour le brossage des dents.</p>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm flex items-start">
+                    <span class="text-2xl mr-3">🎒</span>
+                    <div>
+                        <h4 class="font-bold">Porte-Bébé > Poussette</h4>
+                        <p class="text-sm text-gray-600">Les pavés de Salvador et les sentiers de la Chapada rendent la poussette difficile. Préférez le portage.</p>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm flex items-start">
+                    <span class="text-2xl mr-3">💊</span>
+                    <div>
+                        <h4 class="font-bold">Santé</h4>
+                        <p class="text-sm text-gray-600">Consultation pédiatre avant départ. Vérifiez les vaccins. Bahia est bien équipé en pharmacies.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-bahia-dark text-white py-8 text-center mt-12">
+    <p class="text-sm opacity-70">Généré par votre Assistant Voyagiste IA • Voyage au Brésil</p>
+    <p class="text-xs opacity-50 mt-2">Les données budgétaires et météorologiques sont des estimations basées sur les moyennes saisonnières.</p>
+</footer>
+
+<!-- JAVASCRIPT LOGIC -->
+<script>
+    // --- DATA STORE ---
+    const itineraryData = [
+        {
+            day: 1,
+            location: "Salvador de Bahia",
+            title: "Arrivée & Immersion",
+            icon: "🛬",
+            desc: "Atterrissage à Salvador. Transfert privé (recommandé avec bébé) vers le quartier historique du Pelourinho. Installation dans une Pousada de charme.",
+            babyTip: "Privilégiez un hôtel avec fenêtres insonorisées, le Pelourinho est festif et bruyant le soir.",
+            intensity: "Moyenne",
+            color: "border-bahia-red"
+        },
+        {
+            day: 2,
+            location: "Salvador",
+            title: "Couleurs & Percussions",
+            icon: "🥁",
+            desc: "Visite matinale (moins chaud) : Église São Francisco (or massif) et rues colorées. Déjeuner local. Après-midi calme ou visite du Mercado Modelo.",
+            babyTip: "Utilisez le porte-bébé, les rues sont pavées et pentues. Chapeau et hydratation constante.",
+            intensity: "Faible",
+            color: "border-bahia-red"
+        },
+        {
+            day: 3,
+            location: "Vers la Chapada",
+            title: "En route vers l'Aventure",
+            icon: "🚌",
+            desc: "Départ pour Lençóis (Chapada Diamantina). Option Bus Confort (6h) ou Avion (45min + transfert). Installation au cœur de la nature.",
+            babyTip: "Si bus : prenez les places 'Leito' (couchettes) pour que bébé puisse dormir confortablement.",
+            intensity: "Forte",
+            color: "border-bahia-teal"
+        },
+        {
+            day: 4,
+            location: "Chapada Diamantina",
+            title: "Grottes & Eaux Cristallines",
+            icon: "✨",
+            desc: "Visite de la Gruta da Pratinha : eau turquoise, baignade facile avec bébé. Puis Gruta Azul pour la photo. Coucher de soleil au Morro do Pai Inácio (montée 20min).",
+            babyTip: "La Pratinha a une 'plage' d'eau douce très sûre pour les tout-petits. Location de gilets possible.",
+            intensity: "Moyenne",
+            color: "border-bahia-teal"
+        },
+        {
+            day: 5,
+            location: "Chapada Diamantina",
+            title: "Cascades Accessibles",
+            icon: "💦",
+            desc: "Poço do Diabo : marche facile (20min), baignade rafraîchissante. Après-midi flânerie dans le village colonial de Lençóis.",
+            babyTip: "L'eau des cascades est fraîche (20-22°C), prévoyez un maillot thermique pour bébé si frileux.",
+            intensity: "Moyenne",
+            color: "border-bahia-teal"
+        },
+        {
+            day: 6,
+            location: "Vers la Côte",
+            title: "Retour vers l'Océan",
+            icon: "🚗",
+            desc: "Trajet retour vers la côte. Direction Praia do Forte, ancien village de pêcheurs devenu station balnéaire chic et éco-responsable.",
+            babyTip: "Longue journée de transition. Prévoyez arrêts fréquents si voiture. Arrivée : piscine de l'hôtel !",
+            intensity: "Forte",
+            color: "border-bahia-yellow"
+        },
+        {
+            day: 7,
+            location: "Praia do Forte",
+            title: "Tortues & Cocotiers",
+            icon: "🐢",
+            desc: "Visite du Projet TAMAR (sanctuaire des tortues marines). Les bassins fascinent les enfants. Après-midi plage dans les piscines naturelles à marée basse.",
+            babyTip: "Le Projet TAMAR est 100% accessible en poussette. Idéal pour une balade éducative.",
+            intensity: "Faible",
+            color: "border-bahia-yellow"
+        },
+        {
+            day: 8,
+            location: "Praia do Forte",
+            title: "Le Ballet des Baleines",
+            icon: "🐋",
+            desc: "Août est le PIC de la saison. Sortie en bateau (catamaran stable) pour observer les baleines à bosse. Émotion garantie.",
+            babyTip: "Choisissez un gros bateau (schooner/catamaran) plus stable pour bébé. Gilet de sauvetage bébé fourni.",
+            intensity: "Moyenne",
+            color: "border-bahia-yellow"
+        },
+        {
+            day: 9,
+            location: "Imbassaí",
+            title: "Rivière & Océan",
+            icon: "🛶",
+            desc: "Excursion au village voisin d'Imbassaí. Baignade là où la rivière rencontre la mer. Déjeuner les pieds dans le sable.",
+            babyTip: "La partie rivière est chaude, calme et peu profonde : la piscine naturelle parfaite pour un an.",
+            intensity: "Faible",
+            color: "border-bahia-yellow"
+        },
+        {
+            day: 10,
+            location: "Praia do Forte",
+            title: "Détente & Souvenirs",
+            icon: "🥥",
+            desc: "Journée libre. Shopping artisanal, dernière eau de coco, visite des ruines du château Garcia D'Avila pour la vue.",
+            babyTip: "Journée 'rythme bébé'. Sieste, parc, jeux de sable. Pas de stress avant le départ.",
+            intensity: "Faible",
+            color: "border-bahia-yellow"
+        },
+        {
+            day: 11,
+            location: "Départ",
+            title: "Adeus Brasil",
+            icon: "🛫",
+            desc: "Transfert vers l'aéroport de Salvador (1h de route). Vol retour la tête pleine de souvenirs.",
+            babyTip: "Gardez des vêtements chauds à portée de main pour la clim de l'avion.",
+            intensity: "Moyenne",
+            color: "border-bahia-dark"
+        }
+    ];
+
+    // --- RENDER TIMELINE ---
+    const timelineContainer = document.getElementById('timeline-container');
+    
+    itineraryData.forEach((day, index) => {
+        const isLeft = index % 2 === 0;
+        const alignClass = isLeft ? 'md:flex-row' : 'md:flex-row-reverse';
+        const textClass = isLeft ? 'md:text-right' : 'md:text-left';
+        const marginClass = isLeft ? 'md:mr-8' : 'md:ml-8';
+
+        const html = `
+            <div class="relative flex flex-col md:flex-row items-center md:justify-between w-full">
+                <!-- Spacer for Desktop Alignment -->
+                <div class="hidden md:block w-5/12"></div>
+                
+                <!-- Center Dot/Icon -->
+                <div class="absolute left-4 md:left-1/2 md:-translate-x-1/2 flex items-center justify-center w-10 h-10 rounded-full bg-white border-4 ${day.color} z-10 shadow-md">
+                    <span class="text-lg">${day.icon}</span>
+                </div>
+
+                <!-- Content Card -->
+                <div class="w-full md:w-5/12 pl-16 md:pl-0 ${isLeft ? 'md:pr-8' : 'md:pl-8'}">
+                    <div class="bg-white p-5 rounded-lg card-shadow border-l-4 ${day.color} hover:scale-105 transition-transform duration-300">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="font-bold text-2xl text-bahia-dark">J${day.day}</span>
+                            <span class="text-xs font-semibold bg-gray-100 text-gray-600 px-2 py-1 rounded">${day.location}</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-bahia-dark mb-1">${day.title}</h3>
+                        <p class="text-sm text-gray-600 mb-3 leading-relaxed">${day.desc}</p>
+                        
+                        <div class="bg-bahia-light p-3 rounded border border-bahia-teal/20 mt-3">
+                            <p class="text-xs text-bahia-dark font-medium flex items-start">
+                                <span class="mr-2">👶</span> 
+                                <span>${day.babyTip}</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        timelineContainer.insertAdjacentHTML('beforeend', html);
+    });
+
+    // --- CHART CONFIGURATION ---
+    
+    // 1. Radar Chart (Trip DNA)
+    const ctxDNA = document.getElementById('tripDnaChart').getContext('2d');
+    new Chart(ctxDNA, {
+        type: 'radar',
+        data: {
+            labels: ['Faune Sauvage', 'Plages', 'Culture', 'Paysages', 'Détente', 'Bébé Friendly'],
+            datasets: [{
+                label: 'Score du Voyage',
+                data: [90, 85, 95, 90, 70, 80],
+                backgroundColor: 'rgba(78, 205, 196, 0.4)', // Bahia Teal
+                borderColor: '#4ECDC4',
+                pointBackgroundColor: '#FF6B6B',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: '#FF6B6B'
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            scales: {
+                r: {
+                    angleLines: { color: '#eee' },
+                    grid: { color: '#eee' },
+                    pointLabels: {
+                        font: { size: 12, family: 'Poppins' },
+                        color: '#292F36'
+                    },
+                    suggestedMin: 0,
+                    suggestedMax: 100,
+                    ticks: { display: false } // Hide numbers on axis for cleaner look
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) return label.join(' ');
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // 2. Activity Intensity (Bar Chart)
+    const ctxActivity = document.getElementById('activityChart').getContext('2d');
+    const activityLevels = itineraryData.map(d => {
+        if(d.intensity === "Forte") return 3;
+        if(d.intensity === "Moyenne") return 2;
+        return 1;
+    });
+    
+    new Chart(ctxActivity, {
+        type: 'bar',
+        data: {
+            labels: itineraryData.map(d => `J${d.day}`),
+            datasets: [{
+                label: 'Intensité',
+                data: activityLevels,
+                backgroundColor: activityLevels.map(lvl => {
+                    if(lvl === 3) return '#FF6B6B'; // Red
+                    if(lvl === 2) return '#FFE66D'; // Yellow
+                    return '#4ECDC4'; // Teal
+                }),
+                borderRadius: 4
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 3.5,
+                    ticks: {
+                        callback: function(value) {
+                            if(value === 1) return 'Cool';
+                            if(value === 2) return 'Moyen';
+                            if(value === 3) return 'Intense';
+                            return '';
+                        },
+                        font: { family: 'Poppins' }
+                    },
+                    grid: { display: false }
+                },
+                x: {
+                    grid: { display: false }
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) return label.join(' ');
+                            return label;
+                        },
+                        label: function(context) {
+                            const lvl = context.raw;
+                            if(lvl === 3) return "Intense (Transport/Marche)";
+                            if(lvl === 2) return "Moyen (Visite)";
+                            return "Cool (Plage/Détente)";
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // 3. Budget (Doughnut)
+    const ctxBudget = document.getElementById('budgetChart').getContext('2d');
+    new Chart(ctxBudget, {
+        type: 'doughnut',
+        data: {
+            labels: ['Hébergement (Charme)', 'Transport (Privé/Avion)', 'Nourriture & Plaisirs', 'Activités (Baleines/Guides)'],
+            datasets: [{
+                data: [40, 25, 20, 15],
+                backgroundColor: [
+                    '#4ECDC4', // Teal
+                    '#292F36', // Dark
+                    '#FFE66D', // Yellow
+                    '#FF6B6B'  // Red
+                ],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            cutout: '60%',
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        font: { family: 'Poppins', size: 11 },
+                        boxWidth: 12,
+                        padding: 15
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) return label.join(' ');
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+</script>
+</body>
+</html>
